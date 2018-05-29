@@ -167,6 +167,7 @@ private:
     QRadioTuner::Band m_currentBand;
     qint64 m_freqMin;
     qint64 m_freqMax;
+    int m_pendingFreq;
     qint64 m_currentFreq;
     QTimer* m_timer;
     QRadioTuner::SearchMode m_searchMode;
@@ -181,8 +182,10 @@ private:
     QString m_stationName;
     QString m_radioText;
 
+    void clear();
     bool initRadio();
     void doSeek(int dir);
+    void doSearch(bool forward);
     bool SetFreq(int frequency);//Hz
     int GetFreq();//Hz
     bool SetTuner();

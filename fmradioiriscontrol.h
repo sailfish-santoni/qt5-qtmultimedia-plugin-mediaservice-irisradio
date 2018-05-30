@@ -158,6 +158,7 @@ private:
     int m_fd;
 
     bool m_muted;
+    QRadioTuner::StereoMode m_stereoMode;
     bool m_stereo;
     bool m_low;
     bool m_tunerAvailable;

@@ -50,6 +50,7 @@ FMRadioIrisControl::FMRadioIrisControl()
       m_workerThread(0),
       m_fd(-1),
       m_muted(false),
+      m_stereoMode(QRadioTuner::Auto),
       m_stereo(false),
       m_low(false),
       m_tunerAvailable(false),
@@ -214,11 +215,13 @@ bool FMRadioIrisControl::isStereo() const
 
 QRadioTuner::StereoMode FMRadioIrisControl::stereoMode() const
 {
-    return QRadioTuner::Auto;
+    return m_stereoMode;
 }
 
 void FMRadioIrisControl::setStereoMode(QRadioTuner::StereoMode mode)
 {
+    m_stereoMode = mode;
+
     if (!m_tunerAvailable)
         return;
 
@@ -226,7 +229,7 @@ void FMRadioIrisControl::setStereoMode(QRadioTuner::StereoMode mode)
     v4l2_tuner tuner;
     memset(&tuner, 0, sizeof(tuner));
 
-    if (mode == QRadioTuner::ForceMono)
+    if (m_stereoMode == QRadioTuner::ForceMono)
         stereo = false;
 
     if (ioctl(m_fd, VIDIOC_G_TUNER, &tuner) >= 0) {
@@ -341,6 +344,9 @@ void FMRadioIrisControl::handleTunerAvailable(bool available)
             m_pendingFreq = 0;
             setFrequency(f);
         }
+
+        if (m_tunerAvailable && m_stereoMode != QRadioTuner::Auto)
+            setStereoMode(m_stereoMode);
 
         if (!m_tunerAvailable)
             clear();

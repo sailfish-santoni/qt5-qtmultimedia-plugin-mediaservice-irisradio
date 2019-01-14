@@ -159,7 +159,7 @@ bool FMRadioIrisControl::isBandSupported(QRadioTuner::Band b) const
 
 int FMRadioIrisControl::frequency() const
 {
-    return m_currentFreq;
+    return m_currentFreq ? m_currentFreq : m_pendingFreq;
 }
 
 void FMRadioIrisControl::setFrequency(int frequency)
@@ -518,6 +518,8 @@ void FMRadioIrisControl::stop()
 {
     if (m_currentFreq > 0)
         m_pendingFreq = m_currentFreq;
+
+    m_currentFreq = 0;
 
     m_timer->stop();
     if (m_workerThread) {
